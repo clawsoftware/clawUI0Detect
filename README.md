@@ -21,3 +21,4 @@ none
 
 # License
 Copyright © 2019 Andrew Hess // clawSoft<br>
+Released under the terms of the GNU General Public Licens
