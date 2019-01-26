@@ -16,9 +16,14 @@ none
 
 # Changelog
 
+## v0.0.2 (2019.01.26)
+
+- Bugfixes
+- Allow start with psexec
+
 ## v0.0.1 (2019.01.24)
 
-- Testversion
+- Init
 
 # License
 Copyright © 2019 Andrew Hess // clawSoft<br>
