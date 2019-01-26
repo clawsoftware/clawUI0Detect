@@ -16,9 +16,9 @@ none
 
 # Changelog
 
-## v1.0.0 (2019.01.24)
+## v0.0.1 (2019.01.24)
 
-- initial version
+- Testversion
 
 # License
 Copyright © 2019 Andrew Hess // clawSoft<br>
