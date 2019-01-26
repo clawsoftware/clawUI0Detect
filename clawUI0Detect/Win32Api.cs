@@ -10,7 +10,7 @@ namespace clawUI0Detect
 {
     internal class Win32Api
     {
-        private static readonly List<IntPtr> _results = new List<IntPtr>();
+        private static readonly List<IntPtr> Results = new List<IntPtr>();
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
@@ -31,7 +31,7 @@ namespace clawUI0Detect
         {
             var processID = 0;
             var threadID = GetWindowThreadProcessId(hWnd, out processID);
-            if (threadID == lParam) _results.Add(hWnd);
+            if (threadID == lParam) Results.Add(hWnd);
             return 1;
         }
 
@@ -45,9 +45,9 @@ namespace clawUI0Detect
 
         public static IntPtr[] GetWindowHandlesForThread(int threadHandle)
         {
-            _results.Clear();
+            Results.Clear();
             EnumWindows(WindowEnum, threadHandle);
-            return _results.ToArray();
+            return Results.ToArray();
         }
 
         public static WINDOWPLACEMENT GetPlacement(IntPtr hwnd)

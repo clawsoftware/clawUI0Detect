@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Configuration.Install;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,20 +14,18 @@ namespace clawUI0Detect
 {
     internal partial class Service : ServiceBase
     {
-        private static readonly string Outfile =
-            Environment.SpecialFolder.CommonApplicationData + @"\clawSoft\clawUI0Detect.txt";
+        private static readonly string Outfile = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\clawSoft\clawUI0Detect.txt";
 
         public Service()
         {
             InitializeComponent();
-            Task.Run(() => loop());
         }
 
         protected override void OnStart(string[] args)
         {
             try
             {
-                Directory.CreateDirectory(Environment.SpecialFolder.CommonApplicationData + @"\clawSoft\");
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\clawSoft\");
             }
             catch (Exception e)
             {
@@ -45,9 +45,18 @@ namespace clawUI0Detect
             Console.WriteLine("{0,-30}{1,20}", "Copyright © 2019 Andrew Hess // clawSoft", "");
             Console.WriteLine("{0,-30}{1,20}", "Released under the terms of the GNU General Public License", "");
             Console.WriteLine("{0,-30}{1,20}", "See LICENSE for details", "");
+            Process.Start("sc", "stop clawUI0Detect")?.WaitForExit();
+            Process.Start("sc", "delete clawUI0Detect")?.WaitForExit();
+            try
+            {
             ManagedInstallerClass.InstallHelper(new[]
                 {"/LogToConsole=false /i", Assembly.GetExecutingAssembly().Location});
-            while (!File.Exists(Outfile)) Thread.Sleep(400);
+            }
+            catch (Exception e)
+            {
+            }
+
+            while (!File.Exists(Outfile)) Thread.Sleep(100);
             var output = File.ReadAllText(Outfile);
             Console.Write(output);
             Process.Start("sc", "stop clawUI0Detect")?.WaitForExit();
@@ -79,7 +88,7 @@ namespace clawUI0Detect
 
                 if (procesInfo.SessionId == 0 && services[0].Id != ppid && ppid != -1 && wininit[0].Id != ppid &&
                     svchost != ppid && procesInfo.Id != Process.GetCurrentProcess().Id &&
-                    procesInfo.Id != wlanext[0].Id)
+                    procesInfo.Id != wlanext[0].Id && procesInfo.ProcessName != "clawUI0Detect")
                 {
                     var window = 0;
                     foreach (ProcessThread threadInfo in procesInfo.Threads)
@@ -124,11 +133,6 @@ namespace clawUI0Detect
                     File.AppendAllText(Outfile, Environment.NewLine);
                 }
             }
-        }
-
-        private static void loop()
-        {
-            while (true) Thread.Sleep(100);
         }
 
         private class detectedprocesses

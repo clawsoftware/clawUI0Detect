@@ -31,6 +31,7 @@
             // 
             // Service
             // 
+            this.AutoLog = false;
             this.ServiceName = "clawUI0Detect";
 
         }
